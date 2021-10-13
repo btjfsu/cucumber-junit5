@@ -3,7 +3,15 @@
 How to Guide to Use JUnit Platform to execute Cucumber scenarios.
 
 ## Overview
+Cucumber is a testing framework that supports Behavior Driven Development (BDD), allowing users to define 
+application operations in plain text. It works based on the Gherkin Domain Specific Language (DSL). This a simple, yet powerful syntax of Gherkin lets developers and testers 
+write complex tests while keeping each test comprehensible to even non-technical users.
 
+JUnit is one of the most popular unit-testing frameworks in the Java ecosystem. The JUnit 5 version contains a number of innovations, 
+with the goal of supporting new features in Java 8 and above, as well as enabling many styles of testing. 
+
+To ensure that developers are able to take advantage of the latest and great functionality offered by Cucumber JVM, This documentation was created to 
+provide a comprehensive approach to getting started with the Cucumber JUnit Platform Engine and takign advantage of these features and functionality.
 
 ## Dependencies
 
@@ -110,8 +118,6 @@ public class CucumberEnvironment {
 }
 ```
 
-
-
 ## Important Note about Cucumber Test Engine with JUnit 5
 The JUnit Platform Suite Engine is separate from the JUnit Jupiter Platform Engine, so functionality typically used within JUnit 5 tests will NOT work\
 when running Cucumber tests. This includes, but is not limited to:
@@ -138,6 +144,37 @@ override through annotation-based configuration.
 #### Embedded Kafka
 You can run Embedded Kafka by adding the `@EmbeddedKafka`. This uses the Spring Test Context to start up, please refer to the following documentation for more information:
 
+### Cucumber Context
+As of Cucumber Java 7.0.0, the `@BeforeAll` and `@AfterAll` annotations have been added to facilitate consistent set-up and tear down of components in a clear and consistent way after running each feature.
+```java
+package com.example;
+
+import io.cucumber.java.AfterAll;
+import io.cucumber.java.BeforeAll;
+import io.cucumber.spring.CucumberContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles(profiles = {"acceptance-test"})
+@CucumberContextConfiguration
+public class CucumberEnvironment {
+    
+    // write @ParameterType and @DataTableTypes here
+    // write @BeforeAll, @Before, @After, @AfterAll here 
+    // (io.cucumber.java annotations, not JUnit Jupiter annotations!)
+  
+  @BeforeAll
+  public static void startEmUp() {
+      // start something here. It will execute before all other contexts (including Spring!)
+  }
+  
+  @AfterAll
+  public static void tearEmDown() {
+    // close, stop, or end something here. It will execute after all other contexts (including Spring!)
+  }
+}
+```
 
 
 
